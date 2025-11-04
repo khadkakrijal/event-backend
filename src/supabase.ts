@@ -1,5 +1,5 @@
-// src/supabase.ts
-import "dotenv/config"; // 👈 must be first
+
+import "dotenv/config"; 
 
 import { createClient } from "@supabase/supabase-js";
 

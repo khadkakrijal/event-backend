@@ -16,5 +16,5 @@
     "types": ["node"],
     "verbatimModuleSyntax": false
   },
-  "include": ["src/**/*", "api/**/*"]
+  "include": ["src/**/*", "src/api/**/*"]
 }
