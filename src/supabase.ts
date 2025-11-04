@@ -1,3 +1,4 @@
+// src/supabase.ts
 import { createClient } from "@supabase/supabase-js";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -7,6 +8,4 @@ if (!url || !serviceKey) {
   throw new Error("Missing Supabase env vars. Check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env");
 }
 
-export const supabase = createClient(url, serviceKey, {
-  auth: { persistSession: false },
-});
+export const supabase = createClient(url, serviceKey, { auth: { persistSession: false } });
