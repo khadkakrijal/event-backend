@@ -1,11 +1,18 @@
 // src/supabase.ts
+import "dotenv/config"; // 👈 must be first
+
 import { createClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const url =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "";
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
 if (!url || !serviceKey) {
-  throw new Error("Missing Supabase env vars. Check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env");
+  throw new Error(
+    "Missing Supabase env vars. Check NEXT_PUBLIC_SUPABASE_URL (or SUPABASE_URL) and SUPABASE_SERVICE_ROLE_KEY in .env"
+  );
 }
 
-export const supabase = createClient(url, serviceKey, { auth: { persistSession: false } });
+export const supabase = createClient(url, serviceKey, {
+  auth: { persistSession: false },
+});

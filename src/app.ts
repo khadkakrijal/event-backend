@@ -17,11 +17,8 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 
   const hasSupabaseEnv =
-    !!(
-      process.env.SUPABASE_SERVICE_ROLE_KEY ||
-      process.env.SUPABASE_URL ||
-      process.env.NEXT_PUBLIC_SUPABASE_URL
-    );
+    !!(process.env.SUPABASE_SERVICE_ROLE_KEY &&
+       (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL));
 
   app.get("/", (_req, res) => {
     if (!hasSupabaseEnv) {
