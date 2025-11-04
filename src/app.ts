@@ -9,12 +9,11 @@ import ticketsRouter from "./routes/tickets";
 import connectRouter from "./routes/connect";
 import reportsRouter from "./routes/reports";
 
-/** Parse comma-separated origins and normalize (strip trailing slashes). */
 function parseAllowedOrigins(src?: string) {
   if (!src) return [];
   return src
     .split(",")
-    .map((s) => s.trim().replace(/\/+$/, "")) // remove trailing slash(es)
+    .map((s) => s.trim().replace(/\/+$/, "")) // strip trailing slash(es)
     .filter(Boolean);
 }
 
@@ -26,29 +25,27 @@ export function createApp() {
   app.use(
     cors({
       origin: (origin, cb) => {
-        // allow server-to-server / curl (no Origin header)
-        if (!origin) return cb(null, true);
-
-        // normalize the incoming Origin (strip trailing slash)
-        const o = origin.replace(/\/+$/, "");
-
-        // allow exact matches from env
-        if (allowedOrigins.includes(o)) return cb(null, true);
-
-        // (optional) allow your preview domains; customize if you want
-        // if (o.endsWith(".vercel.app") && o.includes("event-system")) return cb(null, true);
-
+        if (!origin) return cb(null, true); // server-to-server / curl
+        const normalized = origin.replace(/\/+$/, "");
+        if (allowedOrigins.includes(normalized)) return cb(null, true);
         return cb(new Error(`Not allowed by CORS: ${origin}`));
       },
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
-      credentials: true,            // set to false if you never use cookies/auth headers
-      optionsSuccessStatus: 204,    // for legacy browsers
+      credentials: true,
+      optionsSuccessStatus: 204,
     })
   );
 
-  // NOTE (Express 5): do NOT use app.options("*", cors()) — use "(.*)" only if you need it:
-  // app.options("(.*)", cors());
+  // Optional CORS debug endpoint (remove later)
+  app.get("/__debug/cors", (req, res) => {
+    res.json({
+      env_CORS_ORIGIN: process.env.CORS_ORIGIN,
+      allowedOrigins,
+      receivedOrigin: req.headers.origin,
+      normalizedOrigin: req.headers.origin?.replace(/\/+$/, ""),
+    });
+  });
 
   app.use(express.json({ limit: "25mb" }));
   app.use(express.urlencoded({ extended: true, limit: "25mb" }));
